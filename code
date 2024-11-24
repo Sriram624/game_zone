@@ -1,0 +1,343 @@
+#include <stdio.h>
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <time.h>
+#define pacman 'C' 
+#define edge '#' 
+#define COINS '.' 
+#define empty ' ' 
+#define devil 'X'
+#define height 20 
+#define width 40
+int res = 0;
+int score =0;
+int x,y;
+char a[height][width];
+int food;
+int curr;
+void initialize(){
+    int i,j;
+    for(i=0;i<height;i++){
+        for(j=0;j<width;j++){
+            if(i==0 || j==(width-1) || j==0 || i==(height-1))
+            a[i][j] = edge;
+        
+        else{
+            a[i][j] = empty;
+        }
+        
+    }
+    }
+
+int count = 30;
+while(count!=0){
+    int i = (rand()%(height));
+    int j = (rand()%(width));
+    if(a[i][j] != edge && a[i][j] != pacman){
+        a[i][j] = edge;
+        count--;
+    }
+    
+}
+
+int r = 2; 
+ while (r--) { 
+    int row = (rand() % (height)); 
+    for (int j = 3; j < width - 3; j++) { 
+        if (a[row][j] != edge && a[row][j] != pacman) { 
+            a[row][j] = edge; 
+        } 
+    } 
+}
+    count = 10; 
+    while (count != 0) { 
+        int i = (rand() % (height)); 
+        int j = (rand() % (width)); 
+  
+        if (a[i][j] != edge && a[i][j] != pacman) { 
+            a[i][j] = devil; 
+            count--; 
+        } 
+    } 
+   x = width/2;
+   y = height/2;
+    a[y][x] = pacman;
+      for(i=0;i<height;i++){
+        for(j=0;j<width;j++){
+        if(i%2 == 0 && j%2 == 0 && a[i][j] != edge && a[i][j] != devil && a[i][j] != pacman){
+            a[i][j] = COINS;
+            food++;
+        }
+      }
+      }
+}
+ void gameplay(){
+      system("clear");
+      for (int i = 0; i < height; i++) { 
+        for (int j = 0; j < width; j++) { 
+            printf("%c", a[i][j]); 
+        } 
+        printf("\n"); 
+    } 
+ }
+void cursor(int m_x, int m_y) {
+    int pacman_x = x + m_x;
+    int pacman_y = y + m_y;
+
+    if (a[pacman_y][pacman_x] != edge) {
+        if (a[pacman_y][pacman_x] == COINS) {
+            score++;
+            food--;
+            curr++;
+            if (food == 0) {
+                res = 2; 
+                return;
+            }
+        } else if (a[pacman_y][pacman_x] == devil) {
+            res = 1; 
+            return;
+        }
+
+        a[y][x] = empty; 
+        x = pacman_x;
+        y = pacman_y;
+        a[y][x] = pacman; 
+    }
+}
+
+
+    int game1(){
+ 
+    initialize(); 
+    char ch; 
+    food -= 35; 
+    int final_score = food; 
+    
+    printf("  w(up),a(left),d(right) and "
+           "s(down)\n"); 
+  
+    printf("Enter k to continue: \n"); 
+  
+     ch = getchar(); 
+    if (ch != 'k' && ch != 'k') { 
+        printf("Exit Game! "); 
+        return 1; 
+    } 
+  
+    while (res == 0) {
+    system("clear");
+    gameplay();
+
+    printf("Total Food count: %d\n", final_score);
+    printf("Total Food eaten: %d\n", curr);
+    printf("Current Score: %d\n", score);
+
+    if (food == 0) {
+        res = 2; 
+        break;
+    }
+
+    char ch = getchar();
+    switch (ch) {
+        case 'w': cursor(0, -1); break;
+        case 's': cursor(0, 1); break;
+        case 'a': cursor(-1, 0); break;
+        case 'd': cursor(1, 0); break;
+        case 'q': res = 1; break;
+        default: break;
+    }
+}
+
+system("clear");
+if (res == 1) {
+    printf("Game Over! Your Score: %d\n", score);
+} else if (res == 2) {
+    printf("Winner! Your Score: %d\n", score);
+}
+
+return 0;
+}
+void game2(){
+   int userToss, computerToss, userChoice, userRuns = 0, computerRuns = 0;
+    int balls = 7;
+    srand(time(0)); 
+
+    printf("Toss: Enter 1 for Heads or 0 for Tails: ");
+    scanf("%d", &userToss);
+
+    computerToss = rand() % 2; // 0 or 1
+    printf("Computer toss result: %d\n", computerToss);
+
+    if (userToss == computerToss) {
+        printf("You won the toss! Choose batting (w) or bowling (q): ");
+        char choice;
+        scanf(" %c", &choice);
+
+        if (choice == 'w') {
+            printf("You are batting!\n");
+            for (int i = 0; i < balls; i++) {
+                printf("Enter your run (0-6): ");
+                scanf("%d", &userChoice);
+                computerToss = rand() % 7;
+
+                if (userChoice == computerToss) {
+                    printf("You are out!\n");
+                    break;
+                } else {
+                    userRuns += userChoice;
+                    printf("Current Runs: %d\n", userRuns);
+                }
+            }
+            printf("Your total runs: %d\n", userRuns);
+
+            printf("Computer is batting!\n");
+            for (int i = 0; i < balls; i++) {
+                computerToss = rand() % 7;
+                printf("Computer scored: %d\n", computerToss);
+                computerRuns += computerToss;
+            }
+            printf("Computer's total runs: %d\n", computerRuns);
+        } else if (choice == 'q') {
+            printf("You are bowling!\n");
+            for (int i = 0; i < balls; i++) {
+                computerToss = rand() % 7;
+                printf("Enter your run (0-6): ");
+                scanf("%d", &userChoice);
+
+                if (userChoice == computerToss) {
+                    printf("Computer is out!\n");
+                    break;
+                } else {
+                    computerRuns += computerToss;
+                    printf("Computer scored: %d\n", computerRuns);
+                }
+            }
+            printf("Computer's total runs: %d\n", computerRuns);
+
+            printf("You are batting!\n");
+            for (int i = 0; i < balls; i++) {
+                printf("Enter your run (0-6): ");
+                scanf("%d", &userChoice);
+                computerToss = rand() % 7;
+
+                if (userChoice == computerToss) {
+                    printf("You are out!\n");
+                    break;
+                } else {
+                    userRuns += userChoice;
+                    printf("Current Runs: %d\n", userRuns);
+                }
+            }
+            printf("Your total runs: %d\n", userRuns);
+        } else {
+            printf("Invalid choice! Choose 'w' or 'q'.\n");
+        }
+    } else {
+        printf("You lost the toss! Computer bats first.\n");
+        printf("Computer is batting!\n");
+        for (int i = 0; i < balls; i++) {
+            computerToss = rand() % 7;
+            printf("Computer scored: %d\n", computerToss);
+            computerRuns += computerToss;
+        }
+        printf("Computer's total runs: %d\n", computerRuns);
+
+        printf("You are batting!\n");
+        for (int i = 0; i < balls; i++) {
+            printf("Enter your run (0-6): ");
+            scanf("%d", &userChoice);
+            computerToss = rand() % 7;
+
+            if (userChoice == computerToss) {
+                printf("You are out!\n");
+                break;
+            } else {
+                userRuns += userChoice;
+                printf("Current Runs: %d\n", userRuns);
+            }
+        }
+        printf("Your total runs: %d\n", userRuns);
+    }
+
+    if (userRuns > computerRuns) printf("You win!\n");
+    else if (userRuns < computerRuns) printf("Computer wins!\n");
+    else printf("It's a tie!\n");
+
+    
+}
+void game3(){
+int rock = 1, paper = 2, scissors = 3; 
+    printf("Enter O for Rock\n| for Paper\nX for Scissors: ");
+    
+    
+    char user_char = getchar();
+    int user_choice;
+
+   
+    if (user_char == 'O') {
+        user_choice = rock;
+    } else if (user_char == '|') {
+        user_choice = paper;
+    } else if (user_char == 'X') {
+        user_choice = scissors;
+    } else {
+        printf("Invalid choice\n");
+        return;
+    }
+
+    
+    srand(time(0)); 
+    int computer_choice = (rand() % 3) + 1;
+
+   
+    printf("You chose: ");
+    if (user_choice == rock) printf("Rock\n");
+    else if (user_choice == paper) printf("Paper\n");
+    else if (user_choice == scissors) printf("Scissors\n");
+
+    printf("Computer chose: ");
+    if (computer_choice == rock) printf("Rock\n");
+    else if (computer_choice == paper) printf("Paper\n");
+    else if (computer_choice == scissors) printf("Scissors\n");
+
+   
+    if (user_choice == computer_choice) {
+        printf("It's a draw!\n");
+    } else if ((user_choice == rock && computer_choice == scissors) ||
+               (user_choice == paper && computer_choice == rock) ||
+               (user_choice == scissors && computer_choice == paper)) {
+        printf("You win!\n");
+    } else {
+        printf("Computer wins!\n");
+    }
+}
+
+
+
+int main(){
+    int choice;
+  
+    printf("            Welcome to Game Zone           \n");
+    printf("===========================================\n");
+    printf("Please select a game to play:\n");
+    printf("1. Pacman\n");
+    printf("2. Rock Paper Scissors\n");
+    printf("3. Hand Cricket\n");
+    printf("===========================================\n");
+    printf("Enter your choice (1/2/3): ");
+   
+    scanf("%d",&choice);
+    getchar();
+    switch(choice){
+        case 1:
+        game1();
+        break;
+        case 2:
+        game2();
+        break;
+        case 3:
+        game3();
+        break;
+    }
+    
+}
